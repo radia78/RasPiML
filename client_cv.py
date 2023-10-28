@@ -48,10 +48,10 @@ if __name__ == "__main__":
         'client_port', type=int, help="The port of the client device"
     )
     parser.add_argument(
-        '--height', type=int, default=224, help='Height of the camera output'
+        '--vid_height', type=int, default=224, help='Height of the camera output'
     )
     parser.add_argument(
-        '--width', type=int, default=224, help='Width of the camera output'
+        '--vid_width', type=int, default=224, help='Width of the camera output'
     )
     parser.add_argument(
         '--fps', type=int, default=30, help='FPS of the camera live stream'
