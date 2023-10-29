@@ -1,6 +1,7 @@
 import cv2
 import socket 
 import pickle
+import torch
 from obj_seg import load_model, predict
 
 def load_capture(vid_width, vid_height, fps):
@@ -45,7 +46,8 @@ def main(args):
         if ret == True:
             # encode video frame as a jpeg
             _ , buffer = cv2.imencode(".jpg", frame, [int(cv2.IMWRITE_JPEG_QUALITY), args.fps])
-            box = predict(frame, model, args.detection_threshold)
+            with torch.no_grad():
+                box = predict(frame, model, args.detection_threshold)
 
             # send data
             send_data(box, buffer, s, client_ip, client_port)
