@@ -1,9 +1,32 @@
 import cv2
-import time
 import socket 
 import pickle
+from obj_seg import load_model, predict
+
+def load_capture(vid_width, vid_height, fps):
+    # create video capture object
+    cap = cv2.VideoCapture(0)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, vid_width)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, vid_height)
+    cap.set(cv2.CAP_PROP_FPS, fps)
+
+    return cap
+
+def send_data(box, buffer, socket, ip, port):
+    # turn it into bytes
+    data_dict = {
+        'frame': buffer,
+        'box': box
+    }
+
+    x_as_bytes = pickle.dumps(data_dict)
+
+    # send the bytes over the client ip address
+    socket.sendto((x_as_bytes), (ip, port))
 
 def main(args):
+    model = load_model()
+
     # create a socket for streaming
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 1000000)
@@ -13,36 +36,23 @@ def main(args):
     client_port = args.client_port
 
     # create video capture object
-    cap = cv2.VideoCapture(0)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, args.vid_width)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, args.vid_height)
-    cap.set(cv2.CAP_PROP_FPS, args.fps)
+    cap = load_capture(args.vid_width, args.vid_height, args.fps)
 
     while True:
         # capture the video
         ret, frame = cap.read()
 
         if ret == True:
-            # fps calculation
-            start_time = time.time()
-            
-            # fps calculation
-            end_time = time.time()
-            fps = 1 / (end_time - start_time)
-            print(f"{fps: .3f} FPS")
-
             # encode video frame as a jpeg
-            _ , buffer = cv2.imencode(".jpg", frame, [int(cv2.IMWRITE_JPEG_QUALITY), 30])
+            _ , buffer = cv2.imencode(".jpg", frame, [int(cv2.IMWRITE_JPEG_QUALITY), args.fps])
+            box = predict(frame, model, args.detection_threshold)
 
-            # turn it into bytes
-            x_as_bytes = pickle.dumps(buffer)
-
-            # send the bytes over the client ip address
-            s.sendto((x_as_bytes), (client_ip, client_port))
+            # send data
+            send_data(box, buffer, s, client_ip, client_port)
 
             if cv2.waitKey(5) & 0xFF == ord('q'):
                 break
-
+ 
         else:
             print("Not reading the camera input.")
             break

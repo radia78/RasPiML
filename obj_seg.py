@@ -1,8 +1,16 @@
 import torch
 from torchvision import transforms
 import numpy as np
+from torchvision.models.detection import ssdlite320_mobilenet_v3_large as SSDLite
 import cv2
 from labels import COCO_INSTANCE_CATEGORY_NAMES as coco_names
+import ssl
+
+def load_model():
+    ssl._create_default_https_context = ssl._create_unverified_context
+    model = SSDLite(weights='DEFAULT')
+    model.eval()
+    return model
 
 # preprocessing the image
 transform = transforms.Compose([
