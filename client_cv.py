@@ -4,6 +4,8 @@ import pickle
 import torch
 from obj_seg import load_model, predict
 
+torch.set_num_threads(2)
+
 def load_capture(vid_width, vid_height, fps):
     # create video capture object
     cap = cv2.VideoCapture(0)
