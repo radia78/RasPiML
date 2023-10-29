@@ -1,18 +1,9 @@
-from obj_seg import *
+import cv2
 import time
-from torchvision.models.detection import ssdlite320_mobilenet_v3_large as SSDLite
 import socket 
 import pickle
-import ssl
-
-# turn off ssl verification
-ssl._create_default_https_context = ssl._create_unverified_context
 
 def main(args):
-    # load the model
-    model = SSDLite(weights='DEFAULT')
-    model.eval()
-
     # create a socket for streaming
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 1000000)
@@ -34,9 +25,6 @@ def main(args):
         if ret == True:
             # fps calculation
             start_time = time.time()
-
-            # get the prediction from the model
-            box = predict(frame, model, args.detection_threshold)
             
             # fps calculation
             end_time = time.time()
