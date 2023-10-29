@@ -46,14 +46,8 @@ def main(args):
             # encode video frame as a jpeg
             _ , buffer = cv2.imencode(".jpg", frame, [int(cv2.IMWRITE_JPEG_QUALITY), 30])
 
-            # turn the data into a dictionary for packet sending
-            data_dict = {
-                'frame': buffer,
-                'boxes': box
-            }
-
             # turn it into bytes
-            x_as_bytes = pickle.dumps(data_dict)
+            x_as_bytes = pickle.dumps(buffer)
 
             # send the bytes over the client ip address
             s.sendto((x_as_bytes), (client_ip, client_port))
