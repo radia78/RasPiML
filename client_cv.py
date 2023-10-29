@@ -36,7 +36,7 @@ def main(args):
             start_time = time.time()
 
             # get the prediction from the model
-            boxes, classes, labels = predict(frame, model, args.detection_threshold)
+            box = predict(frame, model, args.detection_threshold)
             
             # fps calculation
             end_time = time.time()
@@ -49,9 +49,7 @@ def main(args):
             # turn the data into a dictionary for packet sending
             data_dict = {
                 'frame': buffer,
-                'boxes': boxes,
-                'classes': classes,
-                'labels': labels
+                'boxes': box
             }
 
             # turn it into bytes

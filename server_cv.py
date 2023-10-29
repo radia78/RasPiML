@@ -1,6 +1,6 @@
-import cv2 
 import socket 
 import pickle
+from obj_seg import *
 
 def main(args):
 
@@ -17,9 +17,15 @@ def main(args):
         x = s.recvfrom(1000000)
         data = x[0]
 
-        # load the image from encoded stream
-        data = pickle.loads(data)
-        img = cv2.imdecode(data, cv2.IMREAD_COLOR)
+        # load the data packets
+        data_dict = pickle.loads(data)
+
+        # decode the data
+        img = cv2.imdecode(data_dict['frame'], cv2.IMREAD_COLOR)
+
+        # draw the boxes
+        img = draw_boxes(data_dict['boxes'], img)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         # show the image on the server
         cv2.imshow('Img Server', img)
