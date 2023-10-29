@@ -2,7 +2,6 @@ import torch
 from torchvision import transforms
 import numpy as np
 from torchvision.models.detection import ssdlite320_mobilenet_v3_large as SSDLite
-from torchvision.models.detection import SSDLite320_MobileNet_V3_Large_Weights
 import cv2
 from labels import COCO_INSTANCE_CATEGORY_NAMES as coco_names
 import ssl
@@ -14,7 +13,9 @@ def load_model():
     return model
 
 # preprocessing the image
-transform = SSDLite320_MobileNet_V3_Large_Weights.COCO_V1.transforms
+transform = transforms.Compose([
+    transforms.ToTensor()
+])
 
 # the predict function
 def predict(image, model, detection_threshold):

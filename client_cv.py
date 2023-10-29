@@ -39,7 +39,7 @@ def main(args):
     # create video capture object
     cap = load_capture(args.vid_width, args.vid_height, args.fps)
 
-    while True:
+    for i in range(30):
         # capture the video
         ret, frame = cap.read()
 
