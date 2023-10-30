@@ -10,6 +10,11 @@ def load_model():
     ssl._create_default_https_context = ssl._create_unverified_context
     model = SSDLite(weights='DEFAULT')
     model.eval()
+    torch.backends.quantized.engine = 'qnnpack'
+    model.qconfig = torch.quantization.get_default_qconfig('qnnpack')
+    torch.quantization.prepare(model, inplace=True)
+    torch.quantization.convert(model, inplace=True)
+
     return model
 
 # preprocessing the image

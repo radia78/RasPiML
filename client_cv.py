@@ -27,10 +27,9 @@ def send_data(box, buffer, socket, ip, port):
     # send the bytes over the client ip address
     socket.sendto((x_as_bytes), (ip, port))
 
+@profile
 def main(args):
     model = load_model()
-
-    print("I'm ok")
 
     # create a socket for streaming
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -43,9 +42,7 @@ def main(args):
     # create video capture object
     cap = load_capture(args.vid_width, args.vid_height, args.fps)
 
-    print("I'm ok")
-
-    for i in range(1):
+    for i in range(60):
         # capture the video
         ret, frame = cap.read()
 
@@ -53,15 +50,10 @@ def main(args):
             # encode video frame as a jpeg
             _ , buffer = cv2.imencode(".jpg", frame, [int(cv2.IMWRITE_JPEG_QUALITY), args.fps])
 
-            with torch.no_grad():
-                box = predict(frame, model, args.detection_threshold)
-
-            print("I'm ok")
+            box = predict(frame, model, args.detection_threshold)
 
             # send data
             send_data(box, buffer, s, client_ip, client_port)
-
-            print("I'm ok")
 
             if cv2.waitKey(5) & 0xFF == ord('q'):
                 break
