@@ -26,8 +26,7 @@ def send_data(box, buffer, socket, ip, port):
 
     # send the bytes over the client ip address
     socket.sendto((x_as_bytes), (ip, port))
-
-@profile
+    
 def main(args):
     model = load_model()
 
