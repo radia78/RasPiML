@@ -8,7 +8,7 @@ torch.set_num_threads(2)
 
 def load_capture(vid_width, vid_height, fps):
     # create video capture object
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture('/dev/video0', cv2.CAP_V4L2)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, vid_width)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, vid_height)
     cap.set(cv2.CAP_PROP_FPS, fps)
