@@ -27,7 +27,7 @@ def predict(image, model, detection_threshold):
     # transform the image to tensor
     image = transform(image)
     # add a batch dimension
-    image = image.unsqueeze(0).half().to('mps')
+    image = image.unsqueeze(0)
     # get the prediction result
     with torch.no_grad():
         outputs = model(image)
