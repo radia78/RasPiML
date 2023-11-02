@@ -1,26 +1,10 @@
 import torch
-from torch import nn
 from torchvision import transforms
 import numpy as np
-from torchvision.models.detection import ssdlite320_mobilenet_v3_large as SSDLite
 import cv2
-from labels import COCO_INSTANCE_CATEGORY_NAMES as coco_names
-import ssl
-
-class QuantizedSSDLite(nn.Module):
-    def __init__(self, weights: str='DEFAULT'):
-        super(QuantizedSSDLite, self).__init__()
-        ssl._create_default_https_context = ssl._create_unverified_context
-        self.quant = torch.ao.quantization.QuantStub()
-        self.model = SSDLite(weights=weights)
-
-    def forward(self, x):
-        x = self.quant(x)
-        x = self.model(x)
-        return x
 
 def load_model():
-    model = QuantizedSSDLite()
+    model = torch.jit.load('qt_model.pth')
     model.eval()
     return model
 
@@ -34,7 +18,7 @@ def predict(image, model, detection_threshold):
     # transform the image to tensor
     image = transform(image)
     # add a batch dimension
-    image = image.unsqueeze(0)
+    image = image
     # get the prediction result
     with torch.no_grad():
         outputs = model(image)
