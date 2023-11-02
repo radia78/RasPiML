@@ -1,4 +1,5 @@
 import torch
+from torch import nn
 from torchvision import transforms
 import numpy as np
 from torchvision.models.detection import ssdlite320_mobilenet_v3_large as SSDLite
@@ -6,9 +7,20 @@ import cv2
 from labels import COCO_INSTANCE_CATEGORY_NAMES as coco_names
 import ssl
 
+class QuantizedSSDLite(nn.Module):
+    def __init__(self, weights: str='DEFAULT'):
+        super(QuantizedSSDLite, self).__init__()
+        ssl._create_default_https_context = ssl._create_unverified_context
+        self.quant = torch.ao.quantization.QuantStub()
+        self.model = SSDLite(weights=weights)
+
+    def forward(self, x):
+        x = self.quant(x)
+        x = self.model(x)
+        return x
+
 def load_model():
-    ssl._create_default_https_context = ssl._create_unverified_context
-    model = SSDLite(weights='DEFAULT')
+    model = QuantizedSSDLite()
     model.eval()
     return model
 
