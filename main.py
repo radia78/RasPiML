@@ -1,4 +1,4 @@
-from utils import predict, load_capture, load_jit_model
+from utils import predict, load_capture, load_jit_model, pixel2angle, degrees2radians
 import cv2
 import time
     
@@ -16,8 +16,12 @@ def main(args):
             # get the boxes from model prediction
             coord = predict(frame, model, args.detection_threshold)
 
-            # if len(coord) != 1 then don't move
-            # else then move the servo by arcsin(relative-distance)
+            if len(coord) != 1:
+                pass
+
+            else:
+                angle = pixel2angle(coord, args.vid_width, degrees2radians(args.hfov))
+                print(angle)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
@@ -41,6 +45,9 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         '--vid_width', type=int, default=224, help='Width of the camera output'
+    )
+    parser.add_argument(
+        '--hfov', type=int, default=54, help='HFOV of the camera module'
     )
     parser.add_argument(
         '--fps', type=int, default=30, help='FPS of the camera live stream'

@@ -29,13 +29,6 @@ def load_capture(vid_width, vid_height, fps):
 
     return cap
 
-def send_data(box, socket, ip, port):
-    # turn the data into bytes
-    x_as_bytes = pickle.dumps(box)
-
-    # send the bytes over the client ip address
-    socket.sendto((x_as_bytes), (ip, port))
-
 # the predict function
 def predict(image, model, detection_threshold):
     # transform the image to tensor
