@@ -98,4 +98,3 @@ void setupCamera(int vidWidth, int vidHeight)
     string window_name = "My camera feed";
     namedWindow(window_name);
 }
-
