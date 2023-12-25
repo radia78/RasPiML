@@ -1,0 +1,7 @@
+1. To compile the camera test script
+g++ camera_test.cpp -o camera_test -I/usr/include/opencv4 -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs -lopencv_videoio
+
+2. To compile the servo motor test script
+g++ servo_test.cpp -o servo_test -lwiringPi
+
+3. 
